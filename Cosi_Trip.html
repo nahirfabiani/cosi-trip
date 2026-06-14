@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosi Trip</title>
+<meta name="description" content="Itinerario Cosi Trip — Rio de Janeiro 2026">
+<meta name="theme-color" content="#0C0C0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Cosi Trip">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Cosi%20Trip%20%E2%80%94%20Rio%202026%22%2C%22short_name%22%3A%22Cosi%20Trip%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230C0C0C%22%2C%22theme_color%22%3A%22%230C0C0C%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%3D%2527100%2527%2520height%3D%2527100%2527%2520fill%3D%2527%25230C0C0C%2527%2F%253E%253Ctext%2520y%3D%252778%2527%2520x%3D%252750%2527%2520text-anchor%3D%2527middle%2527%2520font-size%3D%252760%2527%253ECT%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0C0C0C;
+    --surface:  #141414;
+    --surface2: #1A1A1A;
+    --border:   #2A2A2A;
+    --gold:     #C9A84C;
+    --gold-lt:  #E2C97E;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text:     #F0EDE6;
+    --text-dim: #7A7570;
+    --text-mid: #A8A29C;
+    --done-bg:  #111A12;
+    --done-text:#4A7A50;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 52px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 48px; height: 1px;
+    background: var(--gold);
+  }
+  .header-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    line-height: 1;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--gold-lt);
+  }
+  .header-sub {
+    margin-top: 12px;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 50;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    padding: 16px 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .2s;
+    border-bottom: 1px solid transparent;
+    white-space: nowrap;
+    position: relative;
+    top: 1px;
+  }
+  nav button:hover { color: var(--text-mid); }
+  nav button.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .day { display: none; }
+  .day.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* DAY HEADER */
+  .day-header { margin-bottom: 32px; }
+  .day-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 300;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: -8px;
+    user-select: none;
+  }
+  .day-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .day-header h2 span {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .day-subtitle {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-top: 20px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width .5s ease;
+  }
+  .progress-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 8px;
+    text-align: right;
+  }
+
+  /* ACTIVITY */
+  .activity {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    transition: opacity .2s;
+  }
+  .activity:first-of-type { border-top: 1px solid var(--border); }
+
+  .check-wrap {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .activity input[type="checkbox"] {
+    appearance: none;
+    width: 16px; height: 16px;
+    border: 1px solid var(--text-dim);
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .2s, background .2s;
+  }
+  .activity input[type="checkbox"]:checked {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  .activity input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 5px;
+    width: 4px; height: 7px;
+    border: 1px solid #0C0C0C;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .activity-body { flex: 1; }
+  .activity-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: color .2s;
+  }
+  .activity-desc {
+    margin-top: 5px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+  .activity-tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+  }
+  .tag.cost { border-color: var(--gold); color: var(--gold); }
+  .tag.free { border-color: var(--done-bg); color: #4A7A50; border-color: #2A3D2A; }
+  .tag.note { border-color: var(--border); color: var(--text-dim); }
+
+  .activity.done .activity-title {
+    text-decoration: line-through;
+    color: var(--text-dim);
+  }
+  .activity.done { opacity: 0.5; }
+
+  /* TOTAL BOX */
+  .total-box {
+    margin-top: 28px;
+    padding: 20px 24px;
+    border: 1px solid var(--gold-dim);
+    background: var(--gold-dim);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .total-box .amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--gold-lt);
+  }
+  .total-box .label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* PRE-VIAJE CHECKLIST */
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist-item:first-of-type { border-top: 1px solid var(--border); }
+  .checklist-item input[type="checkbox"] {
+    appearance: none;
+    width: 16px; height: 16px;
+    border: 1px solid var(--text-dim);
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: border-color .2s, background .2s;
+  }
+  .checklist-item input[type="checkbox"]:checked {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  .checklist-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 5px;
+    width: 4px; height: 7px;
+    border: 1px solid #0C0C0C;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+  .checklist-item span {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text);
+    transition: color .2s;
+  }
+  .checklist-item.done span {
+    text-decoration: line-through;
+    color: var(--text-dim);
+  }
+  .checklist-item.done { opacity: 0.5; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 36px 0 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gold-dim);
+  }
+
+  /* GASTOS */
+  .expense-form {
+    margin-bottom: 32px;
+  }
+  .expense-form .field-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .expense-form input,
+  .expense-form select {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .expense-form input:focus,
+  .expense-form select:focus { border-color: var(--gold); }
+  .expense-form select option { background: var(--surface2); }
+  .expense-form input::placeholder { color: var(--text-dim); }
+  .expense-form button {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+    margin-top: 4px;
+  }
+  .expense-form button:hover {
+    background: var(--gold);
+    color: var(--bg);
+  }
+
+  .currency-summary {
+    display: flex;
+    gap: 1px;
+    margin-bottom: 28px;
+  }
+  .currency-card {
+    flex: 1;
+    background: var(--surface2);
+    padding: 18px 16px;
+    text-align: center;
+    border-top: 1px solid var(--gold);
+  }
+  .currency-card .amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--gold-lt);
+  }
+  .currency-card .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .expense-item:first-child { border-top: 1px solid var(--border); }
+  .ex-title { font-size: 0.85rem; font-weight: 400; }
+  .ex-meta { font-size: 0.68rem; color: var(--text-dim); margin-top: 3px; letter-spacing: 0.08em; }
+  .ex-right { display: flex; align-items: center; gap: 16px; }
+  .expense-amount { font-size: 0.88rem; color: var(--gold); font-weight: 500; }
+  .delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px;
+    transition: color .2s;
+  }
+  .delete-btn:hover { color: #cc4444; }
+
+  .empty-state {
+    padding: 48px 0;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--border);
+  }
+
+  .heart-ornament {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .heart-ornament svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* PWA INSTALL BANNER */
+  #pwa-banner {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--gold);
+    padding: 14px 20px;
+    z-index: 100;
+    width: calc(100% - 48px);
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  #pwa-banner.hidden { display: none !important; }
+  .pwa-text {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--text-mid);
+    flex: 1;
+  }
+  .pwa-text strong {
+    display: block;
+    color: var(--gold-lt);
+    font-size: 0.78rem;
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+  .pwa-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+    white-space: nowrap;
+  }
+  .pwa-btn:hover { background: var(--gold); color: var(--bg); }
+  .pwa-dismiss {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Rio de Janeiro &middot; Brasil</div>
+  <div class="heart-ornament">
+    <svg viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 23.5C14 23.5 2 15.8 2 8.5C2 5.46 4.46 3 7.5 3C9.74 3 11.68 4.28 12.7 6.18L14 8.5L15.3 6.18C16.32 4.28 18.26 3 20.5 3C23.54 3 26 5.46 26 8.5C26 15.8 14 23.5 14 23.5Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+    </svg>
+  </div>
+  <h1>Cosi <em>Trip</em></h1>
+  <div class="header-sub">17 — 21 de junio de 2026</div>
+</header>
+
+<nav id="nav"></nav>
+<main id="main"></main>
+
+<div id="pwa-banner" class="hidden">
+  <div class="pwa-text">
+    <strong>Instalar en tu celular</strong>
+    Guardá el itinerario en tu pantalla de inicio
+  </div>
+  <button class="pwa-btn" id="pwa-install-btn">Instalar</button>
+  <button class="pwa-dismiss" id="pwa-dismiss-btn">&#215;</button>
+</div>
+
+<footer>Cosi Trip &middot; Rio de Janeiro 2026 &nbsp;&#9825;</footer>
+
+<script>
+/* ===== DATOS ===== */
+const itinerary = {
+  pre: {
+    title: "Antes de viajar",
+    subtitle: "Checklist pre-viaje",
+    items: [
+      "Confirmar vuelo y hacer check-in online",
+      "Imprimir o descargar voucher del Airbnb",
+      "Reservar auto rentado en el aeropuerto",
+      "Verificar documentación: DNI / licencia de conducir internacional",
+      "Cambiar dinero a Reales (BRL)",
+      "Activar roaming o comprar chip / eSIM Brasil",
+      "Descargar mapas offline de Río (Google Maps)",
+      "Avisar al banco y habilitar tarjeta para uso en el exterior",
+      "Armar valija: ropa liviana, traje de baño, protector solar, repelente",
+      "Reservar restaurante Joaquina (si requiere reserva)",
+      "Chequear pronóstico del clima para Río esas fechas",
+      "Descargar apps: Uber / 99, Google Translate, Waze",
+      "Guardar dirección del Airbnb y contacto del anfitrión Rafael Barreira"
+    ]
+  },
+  days: [
+    {
+      id: "d17",
+      date: "17/06",
+      dayName: "Miércoles",
+      title: "Llegada & Playas",
+      subtitle: "Vuelo · Auto · Check-in · Ipanema & Copacabana",
+      activities: [
+        {
+          title: "Vuelo a Río de Janeiro",
+          desc: "Salida desde Aeroparque (AEP) a las 04:15 hs. Llegada a GIG (Galeão) a las 07:10 hs. Vuelo JA3813, operado por JetSMART.",
+          cost: null, note: "04:15 AEP — 07:10 GIG"
+        },
+        {
+          title: "Retiro del auto rentado",
+          desc: "Retirar el vehículo reservado al llegar al aeropuerto.",
+          cost: null, note: "Aeropuerto GIG"
+        },
+        {
+          title: "Check-in en el Airbnb",
+          desc: "Av. Gastão Sengés, 395 — 504.1. Anfitrión: Rafael Barreira.",
+          cost: null, note: "Hospedaje"
+        },
+        {
+          title: "Playa en Ipanema",
+          desc: "Tarde de playa en Ipanema, zona Arpoador.",
+          cost: 0, note: "Gratuito"
+        },
+        {
+          title: "Caminata por Copacabana",
+          desc: "Recorrido por el paseo: Forte de Copacabana (Confeitaria Colombo adentro), Copacabana Palace y Leme.",
+          cost: 15, note: "Entrada Forte aprox."
+        },
+        {
+          title: "Almuerzo en Restaurante Joaquina",
+          desc: "Buena opción gastronómica cerca de Leme.",
+          cost: 60, note: "Aprox. por persona"
+        },
+        {
+          title: "Atardecer en Pedra do Arpoador",
+          desc: "Mirador clásico para ver la puesta de sol sobre Ipanema.",
+          cost: 0, note: "Gratuito"
+        }
+      ]
+    },
+    {
+      id: "d18",
+      date: "18/06",
+      dayName: "Jueves",
+      title: "Cristo & Pão de Açúcar",
+      subtitle: "Corcovado por la mañana · Pan de Azúcar al atardecer",
+      activities: [
+        {
+          title: "Tren al Cristo Redentor",
+          desc: "Subida en tren panorámico hasta el Corcovado. Recomendado ir temprano para evitar multitudes.",
+          cost: 100, note: "Tren + entrada aprox."
+        },
+        {
+          title: "Pão de Açúcar",
+          desc: "Teleférico hasta la cima del Pan de Azúcar, vistas panorámicas de la ciudad.",
+          cost: 130, note: "Teleférico aprox."
+        },
+        {
+          title: "Atardecer en Mureta da Urca",
+          desc: "Punto de observación clásico para ver la puesta de sol, muy cerca del Pan de Azúcar.",
+          cost: 0, note: "Gratuito"
+        }
+      ]
+    },
+    {
+      id: "d19",
+      date: "19/06",
+      dayName: "Viernes",
+      title: "Cabo Frío",
+      subtitle: "Excursión en auto · Día completo",
+      activities: [
+        {
+          title: "Salida temprano hacia Cabo Frío",
+          desc: "Día completo de excursión en auto. Salida a primera hora de la mañana.",
+          cost: null, note: "Combustible / peajes"
+        },
+        {
+          title: "Playas y centro de Cabo Frío",
+          desc: "Recorrer las playas y el casco histórico de Cabo Frío.",
+          cost: null, note: "Gastos varios"
+        },
+        {
+          title: "Regreso a Río",
+          desc: "Vuelta a Río al caer la tarde.",
+          cost: null, note: "Logística"
+        }
+      ]
+    },
+    {
+      id: "d20",
+      date: "20/06",
+      dayName: "Sábado",
+      title: "Centro, Lapa & Lagoa",
+      subtitle: "Museu do Amanhã · Kobra · Selarón · Santa Teresa · Lagoa · Moto de agua",
+      activities: [
+        {
+          title: "Museu do Amanhã",
+          desc: "Museo de ciencias en Porto Maravilha. Arquitectura notable, vista al puerto.",
+          cost: 30, note: "Entrada aprox."
+        },
+        {
+          title: "Porto Maravilha — Murales de Kobra",
+          desc: "Recorrido por los murales del artista Eduardo Kobra en la zona portuaria.",
+          cost: 0, note: "Gratuito"
+        },
+        {
+          title: "Escadaria Selarón",
+          desc: "Famosa escalera de mosaicos en Lapa, obra del artista Jorge Selarón.",
+          cost: 0, note: "Gratuito"
+        },
+        {
+          title: "Bondinho a Santa Teresa",
+          desc: "Subir en el tranvía histórico hasta el barrio de Santa Teresa.",
+          cost: 20, note: "Tranvía aprox."
+        },
+        {
+          title: "Lagoa Rodrigo de Freitas en bici",
+          desc: "Paseo en bicicleta alrededor de la laguna, muy recomendable al atardecer.",
+          cost: 30, note: "Alquiler aprox."
+        },
+        {
+          title: "Moto de agua en la Lagoa",
+          desc: "Alquiler de moto de agua en la Lagoa Rodrigo de Freitas. Aguas calmas, varios prestadores en la zona.",
+          cost: 150, note: "Aprox. 30 min"
+        },
+        {
+          title: "Jardim Botânico",
+          desc: "Paseo por el jardín botánico de Río, a metros de la Lagoa.",
+          cost: 25, note: "Entrada aprox."
+        },
+        {
+          title: "Parque Lage",
+          desc: "Parque con casona histórica y café. Muy fotogénico, contiguo al Jardim Botânico.",
+          cost: 0, note: "Gratuito"
+        }
+      ]
+    },
+    {
+      id: "d21",
+      date: "21/06",
+      dayName: "Domingo",
+      title: "Regreso",
+      subtitle: "Vuelo a las 08:05 desde GIG — presentarse a las 06:00",
+      activities: [
+        {
+          title: "Check-out del Airbnb",
+          desc: "Dejar el departamento con tiempo. El vuelo de regreso es a las 08:05 hs — hay que estar en GIG a las 06:00 hs.",
+          cost: null, note: "Coordinar con Rafael Barreira"
+        },
+        {
+          title: "Devolución del auto rentado",
+          desc: "Entregar el vehículo en el aeropuerto GIG previo al check-in del vuelo.",
+          cost: null, note: "Aeropuerto GIG"
+        },
+        {
+          title: "Vuelo de regreso a Buenos Aires",
+          desc: "Vuelo JA3813 (JetSMART) — Salida GIG 08:05 hs, llegada Aeroparque 11:30 hs.",
+          cost: null, note: "08:05 GIG — 11:30 AEP"
+        }
+      ]
+    }
+  ],
+  extras: {
+    title: "Opciones adicionales",
+    subtitle: "Si disponen de tiempo y tienen el auto",
+    items: [
+      { title: "Floresta da Tijuca & Vista Chinesa", desc: "Ruta panorámica por la selva tropical de Tijuca hasta el mirador Vista Chinesa.", cost: 0 },
+      { title: "Praia da Joatinga", desc: "Playa escondida entre Barra da Tijuca y São Conrado. Acceso solo con auto.", cost: 0 },
+      { title: "Praia do Pepe — Barra da Tijuca", desc: "Zona de playa amplia y menos turística en Barra da Tijuca.", cost: 0 }
+    ]
+  }
+};
+
+/* ===== ESTADO ===== */
+const STORAGE_KEY = "cosi_trip_rio_2026";
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { checks: {}, expenses: [] };
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+if (!state.checks) state.checks = {};
+if (!state.expenses) state.expenses = [];
+
+/* ===== NAV ===== */
+const nav = document.getElementById('nav');
+const mainEl = document.getElementById('main');
+
+const tabs = [
+  { id: 'pre', label: 'Pre-viaje' },
+  ...itinerary.days.map(d => ({ id: d.id, label: d.date })),
+  { id: 'extras', label: 'Extras' },
+  { id: 'gastos', label: 'Gastos' }
+];
+
+tabs.forEach(t => {
+  const btn = document.createElement('button');
+  btn.textContent = t.label;
+  btn.dataset.tab = t.id;
+  btn.addEventListener('click', () => showTab(t.id));
+  nav.appendChild(btn);
+});
+
+/* ===== RENDER PRE ===== */
+function renderPre() {
+  const wrap = document.createElement('div');
+  wrap.className = 'day';
+  wrap.id = 'page-pre';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'day-header';
+  hdr.innerHTML = `
+    <div class="day-number">—</div>
+    <h2>${itinerary.pre.title}</h2>
+    <div class="day-subtitle">${itinerary.pre.subtitle}</div>
+    <div class="progress-wrap"><div class="progress-bar" id="progress-pre"></div></div>
+    <div class="progress-label" id="progress-label-pre"></div>
+  `;
+  wrap.appendChild(hdr);
+
+  itinerary.pre.items.forEach((item, idx) => {
+    const key = `pre-${idx}`;
+    const div = document.createElement('div');
+    div.className = 'checklist-item' + (state.checks[key] ? ' done' : '');
+    div.innerHTML = `<input type="checkbox" ${state.checks[key] ? 'checked' : ''}><span>${item}</span>`;
+    div.querySelector('input').addEventListener('change', e => {
+      state.checks[key] = e.target.checked;
+      div.classList.toggle('done', e.target.checked);
+      saveState();
+      updateProgress('pre', itinerary.pre.items.length, 'pre-');
+    });
+    wrap.appendChild(div);
+  });
+
+  mainEl.appendChild(wrap);
+  updateProgress('pre', itinerary.pre.items.length, 'pre-');
+}
+
+/* ===== RENDER DAY ===== */
+function renderDay(day, idx) {
+  const wrap = document.createElement('div');
+  wrap.className = 'day';
+  wrap.id = `page-${day.id}`;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'day-header';
+  hdr.innerHTML = `
+    <div class="day-number">${String(idx + 1).padStart(2, '0')}</div>
+    <h2>${day.date} <span>&mdash; ${day.dayName}</span></h2>
+    <div class="day-subtitle">${day.subtitle}</div>
+    <div class="progress-wrap"><div class="progress-bar" id="progress-${day.id}"></div></div>
+    <div class="progress-label" id="progress-label-${day.id}"></div>
+  `;
+  wrap.appendChild(hdr);
+
+  let dayTotal = 0;
+
+  day.activities.forEach((act, i) => {
+    const key = `${day.id}-${i}`;
+    const div = document.createElement('div');
+    div.className = 'activity' + (state.checks[key] ? ' done' : '');
+
+    let tagsHtml = '';
+    if (act.cost === 0) {
+      tagsHtml += `<span class="tag free">Gratuito</span>`;
+    } else if (typeof act.cost === 'number') {
+      tagsHtml += `<span class="tag cost">~ R$ ${act.cost}</span>`;
+      dayTotal += act.cost;
+    }
+    if (act.note) tagsHtml += `<span class="tag note">${act.note}</span>`;
+
+    div.innerHTML = `
+      <div class="check-wrap"><input type="checkbox" ${state.checks[key] ? 'checked' : ''}></div>
+      <div class="activity-body">
+        <div class="activity-title">${act.title}</div>
+        <div class="activity-desc">${act.desc}</div>
+        <div class="activity-tags">${tagsHtml}</div>
+      </div>
+    `;
+    div.querySelector('input').addEventListener('change', e => {
+      state.checks[key] = e.target.checked;
+      div.classList.toggle('done', e.target.checked);
+      saveState();
+      updateProgress(day.id, day.activities.length, `${day.id}-`);
+    });
+    wrap.appendChild(div);
+  });
+
+  if (dayTotal > 0) {
+    const tb = document.createElement('div');
+    tb.className = 'total-box';
+    tb.innerHTML = `<div class="amount">~ R$ ${dayTotal}</div><div class="label">Estimado del día &middot; por persona</div>`;
+    wrap.appendChild(tb);
+  }
+
+  mainEl.appendChild(wrap);
+  updateProgress(day.id, day.activities.length, `${day.id}-`);
+}
+
+/* ===== RENDER EXTRAS ===== */
+function renderExtras() {
+  const wrap = document.createElement('div');
+  wrap.className = 'day';
+  wrap.id = 'page-extras';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'day-header';
+  hdr.innerHTML = `
+    <div class="day-number">+</div>
+    <h2>${itinerary.extras.title}</h2>
+    <div class="day-subtitle">${itinerary.extras.subtitle}</div>
+  `;
+  wrap.appendChild(hdr);
+
+  itinerary.extras.items.forEach((item, idx) => {
+    const key = `extras-${idx}`;
+    const div = document.createElement('div');
+    div.className = 'activity' + (state.checks[key] ? ' done' : '');
+    const tagsHtml = item.cost === 0 ? `<span class="tag free">Gratuito</span>` : '';
+    div.innerHTML = `
+      <div class="check-wrap"><input type="checkbox" ${state.checks[key] ? 'checked' : ''}></div>
+      <div class="activity-body">
+        <div class="activity-title">${item.title}</div>
+        <div class="activity-desc">${item.desc}</div>
+        <div class="activity-tags">${tagsHtml}</div>
+      </div>
+    `;
+    div.querySelector('input').addEventListener('change', e => {
+      state.checks[key] = e.target.checked;
+      div.classList.toggle('done', e.target.checked);
+      saveState();
+    });
+    wrap.appendChild(div);
+  });
+
+  mainEl.appendChild(wrap);
+}
+
+/* ===== RENDER GASTOS ===== */
+function renderGastos() {
+  const wrap = document.createElement('div');
+  wrap.className = 'day';
+  wrap.id = 'page-gastos';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'day-header';
+  hdr.innerHTML = `
+    <div class="day-number">R$</div>
+    <h2>Gastos del viaje</h2>
+    <div class="day-subtitle">Registro de gastos en tiempo real</div>
+  `;
+  wrap.appendChild(hdr);
+
+  const summary = document.createElement('div');
+  summary.className = 'currency-summary';
+  summary.id = 'currency-summary';
+  wrap.appendChild(summary);
+
+  const form = document.createElement('div');
+  form.className = 'expense-form';
+  form.innerHTML = `
+    <div class="field-row">
+      <input type="text" id="ex-desc" placeholder="Descripción">
+    </div>
+    <div class="field-row">
+      <input type="number" id="ex-amount" placeholder="Monto" step="0.01" min="0">
+      <select id="ex-currency">
+        <option value="BRL">R$ Reales</option>
+        <option value="USD">US$ Dólares</option>
+        <option value="ARS">$ Pesos AR</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <select id="ex-day">
+        <option value="pre">Pre-viaje</option>
+        ${itinerary.days.map(d => `<option value="${d.id}">${d.date} — ${d.title}</option>`).join('')}
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+    <button id="ex-add-btn">Registrar gasto</button>
+  `;
+  wrap.appendChild(form);
+
+  const listTitle = document.createElement('div');
+  listTitle.className = 'section-title';
+  listTitle.textContent = 'Gastos registrados';
+  wrap.appendChild(listTitle);
+
+  const list = document.createElement('div');
+  list.id = 'expense-list';
+  wrap.appendChild(list);
+
+  mainEl.appendChild(wrap);
+
+  form.querySelector('#ex-add-btn').addEventListener('click', () => {
+    const desc = form.querySelector('#ex-desc').value.trim();
+    const amount = parseFloat(form.querySelector('#ex-amount').value);
+    const currency = form.querySelector('#ex-currency').value;
+    const dayId = form.querySelector('#ex-day').value;
+    if (!desc || isNaN(amount) || amount <= 0) { alert('Completá descripción y monto.'); return; }
+    state.expenses.push({ id: Date.now(), desc, amount, currency, dayId });
+    saveState();
+    form.querySelector('#ex-desc').value = '';
+    form.querySelector('#ex-amount').value = '';
+    renderExpenseList();
+    renderCurrencySummary();
+  });
+
+  renderExpenseList();
+  renderCurrencySummary();
+}
+
+function dayLabel(dayId) {
+  if (dayId === 'pre') return 'Pre-viaje';
+  if (dayId === 'otro') return 'Otro';
+  const d = itinerary.days.find(x => x.id === dayId);
+  return d ? `${d.date} — ${d.title}` : dayId;
+}
+
+function renderExpenseList() {
+  const list = document.getElementById('expense-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (state.expenses.length === 0) {
+    list.innerHTML = `<div class="empty-state">Sin gastos registrados</div>`;
+    return;
+  }
+  const symbols = { BRL: 'R$', USD: 'US$', ARS: '$' };
+  [...state.expenses].sort((a, b) => b.id - a.id).forEach(ex => {
+    const div = document.createElement('div');
+    div.className = 'expense-item';
+    div.innerHTML = `
+      <div>
+        <div class="ex-title">${ex.desc}</div>
+        <div class="ex-meta">${dayLabel(ex.dayId)}</div>
+      </div>
+      <div class="ex-right">
+        <div class="expense-amount">${symbols[ex.currency]} ${ex.amount.toFixed(2)}</div>
+        <button class="delete-btn" data-id="${ex.id}">&#215;</button>
+      </div>
+    `;
+    div.querySelector('.delete-btn').addEventListener('click', () => {
+      state.expenses = state.expenses.filter(e => e.id !== ex.id);
+      saveState();
+      renderExpenseList();
+      renderCurrencySummary();
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderCurrencySummary() {
+  const summary = document.getElementById('currency-summary');
+  if (!summary) return;
+  const totals = { BRL: 0, USD: 0, ARS: 0 };
+  state.expenses.forEach(ex => totals[ex.currency] += ex.amount);
+  const labels = { BRL: 'Reales', USD: 'Dólares', ARS: 'Pesos AR' };
+  summary.innerHTML = Object.keys(totals).map(cur => `
+    <div class="currency-card">
+      <div class="amount">${totals[cur].toFixed(2)}</div>
+      <div class="label">${labels[cur]}</div>
+    </div>
+  `).join('');
+}
+
+/* ===== PROGRESO ===== */
+function updateProgress(id, total, prefix) {
+  let done = 0;
+  for (let i = 0; i < total; i++) { if (state.checks[`${prefix}${i}`]) done++; }
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById(`progress-${id}`);
+  const label = document.getElementById(`progress-label-${id}`);
+  if (bar) bar.style.width = pct + '%';
+  if (label) label.textContent = `${done} de ${total} completado`;
+}
+
+/* ===== NAVEGACIÓN ===== */
+function showTab(id) {
+  document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById(`page-${id}`);
+  if (page) page.classList.add('active');
+  const btn = [...document.querySelectorAll('nav button')].find(b => b.dataset.tab === id);
+  if (btn) btn.classList.add('active');
+}
+
+/* ===== INIT ===== */
+renderPre();
+itinerary.days.forEach((d, i) => renderDay(d, i));
+renderExtras();
+renderGastos();
+showTab('pre');
+
+/* ===== PWA ===== */
+// Service worker inline via blob
+const SW_CODE = `
+const CACHE = 'cosi-trip-v1';
+const ASSETS = ['/'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => new Response('Offline'))));
+});
+`;
+
+if ('serviceWorker' in navigator) {
+  const blob = new Blob([SW_CODE], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+
+// Install banner
+let deferredPrompt = null;
+const banner = document.getElementById('pwa-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  banner.classList.remove('hidden');
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  banner.classList.add('hidden');
+});
+
+dismissBtn.addEventListener('click', () => {
+  banner.classList.add('hidden');
+});
+
+window.addEventListener('appinstalled', () => {
+  banner.classList.add('hidden');
+  deferredPrompt = null;
+});
+</script>
+
+</body>
+</html>
